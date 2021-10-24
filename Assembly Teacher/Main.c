@@ -1,5 +1,4 @@
 #include "Code_Input.h"
-#include <time.h>
 #define EXERCISE_COUNT 1
 
 void main()
@@ -19,17 +18,21 @@ void main()
 	system("cls");
 	GetCodeFromUser("1"); //Starting point
 	printf("Press any key to test the code . . . ");
+	rewind(stdin);
 	_getch();
 	system("cls");
 	clock_t start = clock();
+	printf("Please wait . . . ");
 	int passed = TestCode("1");
+	system("cls");
 	clock_t end = clock();
-	double seconds = ((double)end - (double)start) / CLOCKS_PER_SEC;
+	double seconds = CalculateTimePassed(start, end);
 	//Remove these files that are created because we are running
 	//DOSBox noconsole
 	remove("stderr.txt");
 	remove("stdout.txt");
-	printf("Time took to test: %f\n", seconds);
+	remove("TASM\\OUTPUT.txt");
+	printf("Time took to assemble: %f\n", seconds);
 	if (passed == 1)
 	{
 		printf("Good job! All cases passed!\n");

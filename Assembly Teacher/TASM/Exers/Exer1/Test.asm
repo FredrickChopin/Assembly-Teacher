@@ -21,21 +21,9 @@ code segment
 	mov ax, data
 	mov ds, ax
 	call test_code
-	push ax
 	add ax, '0'
-	mov dl, al
-	mov ah, 2h
-	int 21h
-	pop ax
-	cmp ax, 0
-	je @@zero
-	mov ax, offset msg1
-	jmp @@continue
-	@@zero:
-	mov ax, offset msg0
-	@@continue:
 	push ax
-	call print_to_file
+	call print_char
 	mov ax, 4c00h
 	int 21h
 	

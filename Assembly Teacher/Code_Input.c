@@ -17,17 +17,16 @@ void GetCodeFromUser(char* exerciseNum)
 	}
 	system("cls");
 	AssembleCodeToUser(exerciseNum);
-	system("cls");
 	int errorCount = 0;
 	while ((errorCount = CountAssemblingErrors()) != 0)
 	{
 		DisplayErrors(errorCount);
 		printf("You must try again\n");
 		system("pause");
+		system("cls");
 		LetUserEdit(exerciseNum);
 		AssembleCodeToUser(exerciseNum);
-	}
-	system("cls");
+	};
 	printf("Code free of errors!\n");
 }
 
@@ -37,6 +36,9 @@ void AssembleCodeToUser(char* exerciseNum)
 	printf("Press any key to assemble . . . ");
 	rewind(stdin);
 	_getch();
+	system("cls");
+	printf("Please wait . . . ");
+	size_t start = clock();
 	//Now append end
 	char* path = GetCodeFilePath(exerciseNum, "Code", "asm");
 	FILE* codeFile = fopen(path, "a");
@@ -46,6 +48,10 @@ void AssembleCodeToUser(char* exerciseNum)
 	AssembleCode(exerciseNum, "Code", "asm");
 	TruncateFromEnd(path, 4);
 	free(path);
+	size_t end = clock();
+	double seconds = CalculateTimePassed(start, end);
+	system("cls");
+	printf("Time took to test: %f\n", seconds);
 }
 
 void LetUserEdit(char* exerciseNum)

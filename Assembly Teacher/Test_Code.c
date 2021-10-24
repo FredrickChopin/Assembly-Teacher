@@ -90,11 +90,12 @@ void AssembleCode(char* exerciseNum, char* type)
 	char* codePath = GetCodeFilePath(exerciseNum, type, "asm"); //will hold path inside project to the code file
 	fprintf(confFile, "tasm /zi %s > TASM_Out.txt\n", codePath + 5);
 	fprintf(confFile, "tlink /v %s.obj\n", type);
-	fprintf(confFile, "%s.exe\n", type);
+	fprintf(confFile, "%s.exe > OUTPUT.txt\n", type);
 	fprintf(confFile, "exit\n");
 	fclose(confFile);
 	system("Assemble_Code.bat");
 	remove("Configuration.conf");
+	free(codePath);
 }
 
 int CheckResult()

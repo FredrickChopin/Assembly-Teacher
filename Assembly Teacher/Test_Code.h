@@ -1,6 +1,6 @@
+#include "Libaries.h"
 #include "File_Handling.h"
-#include <Windows.h>
-#include <direct.h>
+
 #define MAX_ERROR_SIZE 80
 
 typedef struct

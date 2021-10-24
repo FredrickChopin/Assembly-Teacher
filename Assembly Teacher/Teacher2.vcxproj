@@ -147,7 +147,14 @@
   <ItemGroup>
     <ClInclude Include="Code_Input.h" />
     <ClInclude Include="File_Handling.h" />
+    <ClInclude Include="Libaries.h" />
     <ClInclude Include="Test_Code.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assemble_Code.bat" />
+    <None Include="TASM\Exers\Basic.asm" />
+    <None Include="TASM\Exers\Exer1\Code.asm" />
+    <None Include="TASM\Exers\Exer1\Test.asm" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

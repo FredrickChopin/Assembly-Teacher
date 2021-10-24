@@ -1,5 +1,4 @@
 #include "File_Handling.h"
-#include <Windows.h>
 
 int CheckFilePointer(FILE* f)
 {
@@ -9,10 +8,16 @@ int CheckFilePointer(FILE* f)
 	}
 	else
 	{
-		printf("Error when opening file\n");
-		_getch();
+		ThrowError("Error when opening file\n");
 		return 0;
 	}
+}
+
+void ThrowError(char* str)
+{
+	printf("%s", str);
+	rewind(stdin);
+	_getch();
 }
 
 int GoToNextLine(FILE* f)
@@ -135,4 +140,9 @@ void TruncateFromEnd(char* path, int n)
 	fclose(original);
 	remove(path);
 	rename("temp.txt", path);
+}
+
+double CalculateTimePassed(size_t start, size_t end)
+{
+	return ((double)end - (double)start) / CLOCKS_PER_SEC;
 }

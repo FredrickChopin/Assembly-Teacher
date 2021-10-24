@@ -1,7 +1,4 @@
-#define _CRT_SECURE_NO_WARNINGS
-#include <stdio.h>
-#include <string.h>
-#include <ctype.h>
+#include "Libaries.h"
 
 int CheckFilePointer(FILE* f);
 int GoToNextLine(FILE* f);
@@ -11,5 +8,7 @@ void MyCopyFile(FILE* dest, FILE* src);
 void CopyToNewFile(char* fileNameToCopy, char* newName);
 char* GetCodeFilePath(char* exerciseNum, char* type, char* end);
 void MyCopyFileByPath(char* dest, char* src);
-FindFileLength(char* path);
+int FindFileLength(char* path);
 void TruncateFromEnd(char* path, int n);
+void ThrowError(char* str);
+double CalculateTimePassed(size_t start, size_t end);

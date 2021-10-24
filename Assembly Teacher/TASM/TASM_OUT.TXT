@@ -4,5 +4,5 @@ Assembling file:   Exers\Exer1\test.asm  to  test.OBJ
 Error messages:    None
 Warning messages:  None
 Passes:            1
-Remaining memory:  462k
+Remaining memory:  463k
 

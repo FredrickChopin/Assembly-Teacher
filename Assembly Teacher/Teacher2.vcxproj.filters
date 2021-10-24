@@ -38,5 +38,22 @@
     <ClInclude Include="Test_Code.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Libaries.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assemble_Code.bat">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="TASM\Exers\Basic.asm">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="TASM\Exers\Exer1\Test.asm">
+      <Filter>Source Files</Filter>
+    </None>
+    <None Include="TASM\Exers\Exer1\Code.asm">
+      <Filter>Source Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
