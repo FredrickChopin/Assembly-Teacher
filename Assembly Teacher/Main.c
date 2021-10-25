@@ -1,10 +1,11 @@
-#include "Code_Input.h"
-#define EXERCISE_COUNT 1
+#include "User_Handling.h"
+#define EXERCISE_COUNT 1 //The amount of current exercises available
 
+//Program starting point
 void main()
 {
 	system("cls");
-	char exerciseNum[3];
+	char exerciseNum[4];
 	printf("Choose an exercise num --- (1)\n");
 	scanf("%s", exerciseNum);
 	int num = atoi(exerciseNum);
@@ -21,18 +22,8 @@ void main()
 	rewind(stdin);
 	_getch();
 	system("cls");
-	clock_t start = clock();
-	printf("Please wait . . . ");
-	int passed = TestCode("1");
-	system("cls");
-	clock_t end = clock();
-	double seconds = CalculateTimePassed(start, end);
-	//Remove these files that are created because we are running
-	//DOSBox noconsole
-	remove("stderr.txt");
-	remove("stdout.txt");
-	remove("TASM\\OUTPUT.txt");
-	printf("Time took to assemble: %f\n", seconds);
+	int passed = TestCodeToUser("1");
+	CleanGarbageFiles();
 	if (passed == 1)
 	{
 		printf("Good job! All cases passed!\n");

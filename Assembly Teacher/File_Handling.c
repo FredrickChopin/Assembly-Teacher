@@ -142,7 +142,11 @@ void TruncateFromEnd(char* path, int n)
 	rename("temp.txt", path);
 }
 
-double CalculateTimePassed(size_t start, size_t end)
+void CleanGarbageFiles()
 {
-	return ((double)end - (double)start) / CLOCKS_PER_SEC;
+	remove("stderr.txt");
+	remove("stdout.txt");
+	remove("TASM\\OUTPUT.txt");
+	remove("TASM\\TASM_OUT.txt");
+	remove("Configuration.conf");
 }

@@ -11,4 +11,4 @@ void MyCopyFileByPath(char* dest, char* src);
 int FindFileLength(char* path);
 void TruncateFromEnd(char* path, int n);
 void ThrowError(char* str);
-double CalculateTimePassed(size_t start, size_t end);
+void CleanGarbageFiles();
