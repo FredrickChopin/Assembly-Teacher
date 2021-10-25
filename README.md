@@ -1,4 +1,4 @@
-This is a C written desktop console application for Windows. It is an 8086 assembly teacher. The user is given an exercise (so far there is only 1 exercise to choose from).
+This is a C written console application for Windows. It is an 8086 assembly teacher. The user is given an exercise (so far there is only 1 exercise to choose from).
 A code file is prompted with instructions. The user must follow the instructions and solve the exercise. Afterwards, the code is assembled using TASM and the application
 checks for any errors in code. If the code is error-free, a test will be run. A test consists of a sequence of inputs and expected outputs. The user will be notified if
 he passed all the cases or failed at least one.
