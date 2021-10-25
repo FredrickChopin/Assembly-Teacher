@@ -41,6 +41,8 @@ If the user code failed at least one test case, he is given a chance to edit the
 
 Plans for the future:
 1) Add a mechanism for handling code that halts or goes into an infinite loop. Perhaps this could be done by setting a reasonable waiting time, e.g 5 seconds.
-2) Expand the types of exercises. So far, the exercises are only of type "Write a function...". We may want to allow the user to write a full assembly program.
-3) Add a mechanism for assuring user's code is valid. For example, adding "end" at the end can make the test fail or messing up the stack might cause unexpected behaviour.
-4) Make it runnable on other OS.
+2) Add more exercises
+3) Expand the types of exercises. So far, the exercises are only of type "Write a function...". We may want to allow the user to write a full assembly program.
+4) Add procedures to the Basic.asm file, so it will be easier to design future exercises
+5) Add a mechanism for assuring user's code is valid. For example, adding "end" at the end can make the test fail or messing up the stack might cause unexpected behaviour.
+6) Make it runnable on other OS.
