@@ -14,4 +14,4 @@ int FindFileLength(char* path);
 void TruncateFromEnd(char* path, int n);
 void ThrowError(char* str, int freeStr);
 void CleanGarbageFiles();
-PROCESS_INFORMATION MyCreateProcess(char* exeName, char* args, int hidden);
+PROCESS_INFORMATION MyCreateProcess(char* exeName, char* args);

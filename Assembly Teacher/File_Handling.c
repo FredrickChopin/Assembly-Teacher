@@ -22,6 +22,7 @@ void ThrowError(char* str, int freeStr)
 	printf("%s\n", str);
 	system("pause");
 	if (freeStr) free(str);
+	CleanGarbageFiles();
 	exit(1);
 }
 
@@ -141,7 +142,7 @@ void CleanGarbageFiles()
 	remove("Configuration.conf");
 }
 
-PROCESS_INFORMATION MyCreateProcess(char* exeName, char* args, int hidden)
+PROCESS_INFORMATION MyCreateProcess(char* exeName, char* args)
 {
 	STARTUPINFOA si;
 	PROCESS_INFORMATION pi;
@@ -152,12 +153,6 @@ PROCESS_INFORMATION MyCreateProcess(char* exeName, char* args, int hidden)
 	INT size = strlen(exeName) + strlen(args) + 2;
 	PCHAR param = (PCHAR)malloc(size * sizeof(CHAR));
 	sprintf(param, "%s %s", exeName, args);
-	int creationFlags = 0;
-	if (hidden)
-	{
-		creationFlags = STARTF_USESHOWWINDOW;
-		//creationFlags = CREATE_NO_WINDOW;
-	}
 	// Start the child process.
 	BOOL processCreated = CreateProcessA
 	(
@@ -166,7 +161,7 @@ PROCESS_INFORMATION MyCreateProcess(char* exeName, char* args, int hidden)
 		NULL, // Process handle not inheritable
 		NULL, // Thread handle not inheritable
 		FALSE, // Set handle inheritance to FALSE
-		creationFlags, // No creation flags
+		0, // No creation flags
 		NULL, // Use parent's environment block
 		NULL, // Use parent's starting directory
 		&si, // Pointer to STARTUPINFO structure
@@ -178,4 +173,9 @@ PROCESS_INFORMATION MyCreateProcess(char* exeName, char* args, int hidden)
 		ThrowError("Failed to create process\n", 0);
 	}
 	return pi;
+}
+
+double CalculateTimePassed(size_t start, size_t end)
+{
+	return ((double)end - (double)start) / CLOCKS_PER_SEC;
 }

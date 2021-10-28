@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Teacher2", "Teacher2.vcxproj", "{4201DB72-255E-4A77-842D-6536CAFA8CA5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BF1ACA9C-816D-46F5-815A-8C8B15CDDA95}"
+	ProjectSection(SolutionItems) = preProject
+		TASM\Exers\Exer1\Code_Backup.asm = TASM\Exers\Exer1\Code_Backup.asm
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

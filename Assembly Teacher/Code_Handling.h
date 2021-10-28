@@ -15,6 +15,6 @@ typedef struct
 
 int CountAssemblingErrors();
 Error* GetAssemblingErrors(int errorCount);
-void TestCode(char* exerciseNum);
+HANDLE TestCode(char* exerciseNum);
 int CheckResult();
-HANDLE AssembleCode(char* exerciseNum, char* name, int run);
+HANDLE AssembleCode(char* exerciseNum, char* name);

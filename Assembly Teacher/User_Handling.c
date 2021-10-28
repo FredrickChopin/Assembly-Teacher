@@ -2,7 +2,7 @@
 #define MIL_SECONDS_TO_WAIT 5000
 #define EXERCISE_COUNT 2 //The amount of current exercises available + 1
 #define OPERATION_COUNT 6 
-#define MIL_SECONDS_TO_WAIT 3000
+#define MIL_SECONDS_TO_WAIT 2800
 
 void EndProgram()
 {
@@ -89,7 +89,7 @@ void ExerciseMenu(char* exerciseNum)
 	}
 	else if (num == 2)
 	{
-		RunCodeToUser(exerciseNum);
+		AssembleCodeToUser(exerciseNum);
 	}
 	else if (num == 3)
 	{
@@ -114,6 +114,9 @@ void ResetCodeFile(char* exerciseNum)
 	MyCopyFileByPath(codePath, backUpPath);
 	free(codePath);
 	free(backUpPath);
+	system("cls");
+	printf("Reseting completed successfully\n");
+	system("pause");
 }
 
 void DisplayErrors(int errorCount)
@@ -139,25 +142,23 @@ void GetCodeFromUser(char* exerciseNum)
 	LetUserEdit(exerciseNum);
 }
 
-void RunCodeToUser(char* exerciseNum)
+void AssembleCodeToUser(char* exerciseNum)
 {
 	system("cls");
 	printf("Please wait . . . ");
 	//Append end
 	char* path = GetCodeFilePath(exerciseNum, "Code", "asm");
 	FILE* codeFile = fopen(path, "a");
-	if (!CheckFilePointer(codeFile, "RunCodeToUser")) return;
+	if (!CheckFilePointer(codeFile, "AssembleCodeToUser")) return;
 	fprintf(codeFile, "\nend");
 	fclose(codeFile);
 	//Start running
 	time_t start = clock();
-	system("set sdl_videodriver=dummy");
 	HANDLE DOSBoxHandle = AssembleCode(exerciseNum, "Code", 0);
 	DWORD waitType = WaitForSingleObject(DOSBoxHandle, MIL_SECONDS_TO_WAIT);
 	time_t end = clock();
 	double secondsTook = CalculateTimePassed(start, end);
 	system("cls");
-	printf("Wait type = %lu\n", waitType);
 	if (waitType == WAIT_TIMEOUT)
 	{
 		printf("Took too long to test\n");
@@ -196,36 +197,42 @@ void TestCodeToUser(char* exercsieNum)
 	system("cls");
 	printf("Please wait . . . ");
 	clock_t start = clock();
-	TestCode(exercsieNum);
+	HANDLE DOSBoxHandle = TestCode(exercsieNum);
+	DWORD waitType = WaitForSingleObject(DOSBoxHandle, MIL_SECONDS_TO_WAIT);
 	int errorCount = CountAssemblingErrors();
 	clock_t end = clock();
-	double seconds = CalculateTimePassed(start, end);
 	system("cls");
-	printf("Time took to assemble: %f\n", seconds);
-	if (errorCount)
+	if (waitType == WAIT_TIMEOUT)
 	{
-		printf("Errors when testing code\n");
-		DisplayErrors(errorCount);
-		system("pause");
-		return;
-	}
-	int result = CheckResult();
-	if (result == 1)
-	{
-		printf("Good job! All test cases passed!\n");
-	}
-	else if (result == 0)
-	{
-		printf("At least one test case failed\n");
+		printf("Took too long to test\n");
+		printf("Perhaps your code has runtime errors or it stuck at an infinite loop\n");
+		TerminateProcess(DOSBoxHandle, 1);
 	}
 	else
 	{
-		ThrowError("Weird behaviour\n", 0);
+		double seconds = CalculateTimePassed(start, end);
+		printf("Time took to assemble: %f\n", seconds);
+		if (errorCount)
+		{
+			printf("Errors when testing code\n");
+			DisplayErrors(errorCount);
+			system("pause");
+			return;
+		}
+		int result = CheckResult();
+		if (result == 1)
+		{
+			printf("Good job! All test cases passed!\n");
+		}
+		else if (result == 0)
+		{
+			printf("At least one test case failed\n");
+		}
+		else
+		{
+			ThrowError("Weird behaviour, neither 0 nor 1\n", 0);
+		}
 	}
+	CloseHandle(DOSBoxHandle);
 	system("pause");
-}
-
-double CalculateTimePassed(size_t start, size_t end)
-{
-	return ((double)end - (double)start) / CLOCKS_PER_SEC;
 }

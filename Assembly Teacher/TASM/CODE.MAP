@@ -1,9 +1,2 @@
-
- Start  Stop   Length Name               Class
-
- 00000H 001FFH 00200H STA                
- 00200H 00200H 00000H DATA               
- 00200H 00204H 00005H CODE               
-
-Fatal: No program entry point
+Fatal: Unable to open file 'code.obj'
 

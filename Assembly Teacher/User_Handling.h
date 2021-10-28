@@ -7,7 +7,7 @@
 
 void LetUserEdit(char* exerciseNum);
 int CountAssemblingErrors();
-void RunCodeToUser(char* exerciseNum);
+void AssembleCodeToUser(char* exerciseNum);
 void GetCodeFromUser(char* exerciseNum);
 void TestCodeToUser(char* exercsieNum);
 double CalculateTimePassed(size_t start, size_t end);
