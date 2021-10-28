@@ -1,14 +1,16 @@
 #include "Libaries.h"
 
-int CheckFilePointer(FILE* f);
+//This file contains general and specific functions that deal with files
+//And also other general functions
+
+int CheckFilePointer(FILE* f, char* place);
 int GoToNextLine(FILE* f);
 int ScanIntFromFile(FILE* f);
 void ResetMode(FILE* f);
 void MyCopyFile(FILE* dest, FILE* src);
-void CopyToNewFile(char* fileNameToCopy, char* newName);
-char* GetCodeFilePath(char* exerciseNum, char* type, char* end);
+char* GetCodeFilePath(char* exerciseNum, char* type, char* ext);
 void MyCopyFileByPath(char* dest, char* src);
 int FindFileLength(char* path);
 void TruncateFromEnd(char* path, int n);
-void ThrowError(char* str);
+void ThrowError(char* str, int freeStr);
 void CleanGarbageFiles();

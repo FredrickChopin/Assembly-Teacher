@@ -1,0 +1,6 @@
+﻿  User_Handling.c
+C:\Users\Ariel\source\repos\Teacher2\User_Handling.c(81,35): warning C4098: 'ExerciseMenu': 'void' function returning a value
+C:\Users\Ariel\source\repos\Teacher2\User_Handling.c(100,34): warning C4098: 'ExerciseMenu': 'void' function returning a value
+C:\Users\Ariel\source\repos\Teacher2\User_Handling.c(191,12): warning C4098: 'TestCodeToUser': 'void' function returning a value
+C:\Users\Ariel\source\repos\Teacher2\User_Handling.c(64): warning C4717: 'MainMenu': recursive on all control paths, function will cause runtime stack overflow
+  Teacher2.vcxproj -> C:\Users\Ariel\source\repos\Teacher2\Debug\Teacher2.exe

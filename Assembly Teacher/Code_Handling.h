@@ -1,8 +1,12 @@
 #include "Libaries.h"
 #include "File_Handling.h"
 
-#define MAX_ERROR_SIZE 80
+//This file handles the work with the code.
+//Assembling, running, and testing the code.
 
+
+//Struct for storing an assembling error
+#define MAX_ERROR_SIZE 80
 typedef struct
 {
 	int lineNumber;
@@ -11,7 +15,6 @@ typedef struct
 
 int CountAssemblingErrors();
 Error* GetAssemblingErrors(int errorCount);
-int TestCode(char* exerciseNum);
+void TestCode(char* exerciseNum);
 int CheckResult();
-void DisplayErrors(int errorCount);
 void AssembleCode(char* exerciseNum, char* type);

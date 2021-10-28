@@ -1,50 +1,152 @@
 #include "User_Handling.h"
 #define MIL_SECONDS_TO_WAIT 5000
+#define EXERCISE_COUNT 2 //The amount of current exercises available + 1
+#define OPERATION_COUNT 6 
+
+void EndProgram()
+{
+	system("cls");
+	printf("Thank you for using Assembly Teacher\n");
+	CleanGarbageFiles();
+	exit(0);
+}
+
+int GetIntInRange(char* buff, int buffSize, int top)
+{
+	//including top number
+	//Returns boolean value which determines wether the user entered an int
+	if (buffSize <= 0)
+	{
+		ThrowError("At GetIntInRange, buffSize <= 0\n", 0);
+	}
+	rewind(stdin);
+	int i;
+	char c;
+	for (i = 0; i < buffSize - 1; i++)
+	{
+		c = fgetc(stdin);
+		if (c == '\n')
+		{
+			break;
+		}
+		buff[i] = c;
+	}
+	buff[i] = '\0';
+	int num = atoi(buff);
+	if (num < 1 || num > top)
+	{
+		printf("Invalid choise\n");
+		system("pause");
+		return 0;
+	}
+	return 1;
+}
+
+void MainMenu()
+{
+	system("cls");
+	char exerciseNum[4];
+	printf("Choose an exercise number:\n");
+	printf("Exercise ---> (1)\n");
+	printf("Exit ---> 2\n\n");
+	int success = GetIntInRange(exerciseNum, 4, EXERCISE_COUNT);
+	if (atoi(exerciseNum) == EXERCISE_COUNT)
+	{
+		EndProgram();
+	}
+	if (!success)
+	{
+		MainMenu();
+		return;
+	}
+	ExerciseMenu(exerciseNum);
+	MainMenu();
+}
+
+void ExerciseMenu(char* exerciseNum)
+{
+	//Returns ANOTHER_EXERCISE if user wants to do another exercise after this exercise
+	//Returns DIFFERENT_EXERCISE otherwise
+	system("cls");
+	printf("Choose an operation:\n");
+	printf("1 ---> Edit code\n");
+	printf("2 ---> Check for code errors\n");
+	printf("3 ---> Test code\n");
+	printf("4 ---> Reset code file\n");
+	printf("5 ---> Go back\n");
+	char input[3];
+	int success = GetIntInRange(input, 3, OPERATION_COUNT);
+	if (!success)
+	{
+		ExerciseMenu(exerciseNum);
+		return;
+	}
+	int num = atoi(input);
+	if (num == 1)
+	{
+		GetCodeFromUser(exerciseNum);
+	}
+	else if (num == 2)
+	{
+		AssembleCodeToUser(exerciseNum);
+	}
+	else if (num == 3)
+	{
+		TestCodeToUser(exerciseNum);
+	}
+	else if (num == 4)
+	{
+		ResetCodeFile(exerciseNum);
+	}
+	else //if (num == 5)
+	{
+		return;
+	}
+	ExerciseMenu(exerciseNum);
+}
+
+void ResetCodeFile(char* exerciseNum)
+{
+	char* codePath = GetCodeFilePath(exerciseNum, "Code", "asm");
+	char* backUpPath = GetCodeFilePath(exerciseNum, "Code_Backup", "asm");
+	remove(codePath);
+	MyCopyFileByPath(codePath, backUpPath);
+	free(codePath);
+	free(backUpPath);
+}
+
+void DisplayErrors(int errorCount)
+{
+	printf("Error count: %d\n", errorCount);
+	printf("Error list: \n\n");
+	Error* errors = GetAssemblingErrors(errorCount);
+	for (int i = 0; i < errorCount; i++)
+	{
+		printf("(%d): ", errors[i].lineNumber);
+		puts(errors[i].description);
+	}
+	free(errors);
+}
 
 void GetCodeFromUser(char* exerciseNum)
 {
-	printf("Would you like to edit the code? y / (n)\n");
-	rewind(stdin);
-	char c = 0;
-	scanf("%c", &c);
-	if (c == 'y')
-	{
-		system("cls");
-		printf("Write the code in the editor that is going to prompt\n");
-		printf("Close the editor when you are done\n");
-		printf("Make sure to follow the given commented instructions\n");
-		system("pause");
-		LetUserEdit(exerciseNum);
-	}
 	system("cls");
-	AssembleCodeToUser(exerciseNum);
-	int errorCount = 0;
-	while ((errorCount = CountAssemblingErrors()) != 0)
-	{
-		DisplayErrors(errorCount);
-		printf("Your code has errors\n");
-		printf("Would you like to try again?\n");
-		system("pause");
-		system("cls");
-		LetUserEdit(exerciseNum);
-		AssembleCodeToUser(exerciseNum);
-	};
-	printf("Code free of errors!\n");
+	printf("Write the code in the editor that is going to prompt\n");
+	printf("Close the editor when you are done\n");
+	printf("Make sure to follow the given commented instructions\n");
+	system("pause");
+	LetUserEdit(exerciseNum);
 }
-
 
 void AssembleCodeToUser(char* exerciseNum)
 {
-	printf("Press any key to assemble . . . ");
-	rewind(stdin);
-	_getch();
 	system("cls");
 	printf("Please wait . . . ");
 	size_t start = clock();
 	//Now append end
 	char* path = GetCodeFilePath(exerciseNum, "Code", "asm");
 	FILE* codeFile = fopen(path, "a");
-	if (!CheckFilePointer(codeFile)) return;
+	if (!CheckFilePointer(codeFile, "AssembleCodeToUser")) return;
 	fprintf(codeFile, "\nend");
 	fclose(codeFile);
 	AssembleCode(exerciseNum, "Code");
@@ -54,6 +156,14 @@ void AssembleCodeToUser(char* exerciseNum)
 	double seconds = CalculateTimePassed(start, end);
 	system("cls");
 	printf("Time took to test: %f\n", seconds);
+	int errorCount = CountAssemblingErrors();
+	if (errorCount)
+	{
+		printf("Your code has errors\n");
+		DisplayErrors(errorCount);
+	}
+	printf("Code free of errors!\n");
+	system("pause");
 }
 
 void LetUserEdit(char* exerciseNum)
@@ -63,8 +173,9 @@ void LetUserEdit(char* exerciseNum)
 	free(path);
 }
 
-int TestCodeToUser(char* exercsieNum)
+void TestCodeToUser(char* exercsieNum)
 {
+	system("cls");
 	printf("Please wait . . . ");
 	clock_t start = clock();
 	TestCode(exercsieNum);
@@ -78,9 +189,22 @@ int TestCodeToUser(char* exercsieNum)
 		printf("Errors when testing code\n");
 		DisplayErrors(errorCount);
 		system("pause");
-		return -1;
+		return;
 	}
-	return CheckResult();
+	int result = CheckResult();
+	if (result == 1)
+	{
+		printf("Good job! All test cases passed!\n");
+	}
+	else if (result == 0)
+	{
+		printf("At least one test case failed\n");
+	}
+	else
+	{
+		ThrowError("Weird behaviour\n", 0);
+	}
+	system("pause");
 }
 
 double CalculateTimePassed(size_t start, size_t end)

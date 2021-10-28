@@ -1,6 +1,6 @@
 #include "File_Handling.h"
 
-int CheckFilePointer(FILE* f)
+int CheckFilePointer(FILE* f, char* place)
 {
 	if (f)
 	{
@@ -8,16 +8,21 @@ int CheckFilePointer(FILE* f)
 	}
 	else
 	{
-		ThrowError("Error when opening file\n");
+		char* def = "Error when opening file at ";
+		char* error = (char*)malloc((strlen(def) + strlen(place) + 1) * sizeof(char));
+		strcpy(error, def);
+		strcat(error, place);
+		ThrowError(error, 1);
 		return 0;
 	}
 }
 
-void ThrowError(char* str)
+void ThrowError(char* str, int freeStr)
 {
-	printf("%s", str);
-	rewind(stdin);
-	_getch();
+	printf("%s\n", str);
+	system("pause");
+	if (freeStr) free(str);
+	exit(1);
 }
 
 int GoToNextLine(FILE* f)
@@ -65,9 +70,9 @@ void MyCopyFile(FILE* dest, FILE* src)
 void MyCopyFileByPath(char* dest, char* src)
 {
 	FILE* fileDest = fopen(dest, "w");
-	if (!CheckFilePointer(fileDest)) return;
+	if (!CheckFilePointer(fileDest, "MyCopyFileByPath")) return;
 	FILE* fileSrc = fopen(src, "r");
-	if (!CheckFilePointer(fileSrc))
+	if (!CheckFilePointer(fileSrc, "MyCopyFileByPath"))
 	{
 		fclose(fileDest);
 		return;
@@ -77,38 +82,23 @@ void MyCopyFileByPath(char* dest, char* src)
 	fclose(fileSrc);
 }
 
-
-void CopyToNewFile(char* fileNameToCopy, char* newName)
+char* GetCodeFilePath(char* exerciseNum, char* type, char* ext)
 {
-	FILE* src = fopen(fileNameToCopy, "r");
-	if (!CheckFilePointer(src)) return;
-	FILE* newCopy = fopen(newName, "w");
-	if (!CheckFilePointer(newCopy))
-	{
-		fclose(src);
-		return;
-	}
-	MyCopyFile(newCopy, src);
-	fclose(src);
-	fclose(newCopy);
-}
-
-char* GetCodeFilePath(char* exerciseNum, char* type, char* end)
-{
+	//This program returns dynamically allocated memory
 	char* path = (char*)malloc(50 * sizeof(char));
 	strcpy(path, "TASM\\Exers\\Exer");
 	strcat(path, exerciseNum);
 	strcat(path, "\\");
 	strcat(path, type);
 	strcat(path, ".");
-	strcat(path, end);
+	strcat(path, ext);
 	return path;
 }
 
 int FindFileLength(char* path)
 {
 	FILE* f = fopen(path, "r");
-	if (!CheckFilePointer(f)) return -1;
+	if (!CheckFilePointer(f, "FindFileLength")) return -1;
 	int length = 0;
 	char c = 0;
 	while ((c = fgetc(f)) != EOF)
@@ -123,9 +113,9 @@ void TruncateFromEnd(char* path, int n)
 {
 	int fileLength = FindFileLength(path);
 	FILE* original = fopen(path, "r");
-	if (!CheckFilePointer(original)) return;
+	if (!CheckFilePointer(original, "TruncateFromEnd")) return;
 	FILE* copy = fopen("temp.txt", "w");
-	if (!CheckFilePointer(copy))
+	if (!CheckFilePointer(copy, "TruncateFromEnd"))
 	{
 		fclose(original);
 		return;

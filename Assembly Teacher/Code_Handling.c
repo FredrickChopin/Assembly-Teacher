@@ -4,7 +4,7 @@
 int CountAssemblingErrors()
 { //Counts the number of errors in the compilation process of TASM
 	FILE* TASMOut = fopen("TASM\\Tasm_Out.txt", "r");
-	if (!CheckFilePointer(TASMOut)) return -1;
+	if (!CheckFilePointer(TASMOut, "CountAssemblingErrors")) return -1;
 	char buff[20] = "\0";
 	while (!feof(TASMOut))
 	{
@@ -28,9 +28,10 @@ int CountAssemblingErrors()
 
 Error* GetAssemblingErrors(int errorCount)
 {
+	//This program returns dynamically allocated memory
 	if (errorCount == 0) return NULL;
 	FILE* TASMOut = fopen("TASM\\Tasm_Out.txt", "r");
-	if (!CheckFilePointer(TASMOut)) return NULL;
+	if (!CheckFilePointer(TASMOut, "GetAssemblingErrors")) return NULL;
 	for (int i = 0; i < 3; i++)
 	{
 		GoToNextLine(TASMOut);
@@ -51,20 +52,7 @@ Error* GetAssemblingErrors(int errorCount)
 	return errors;
 }
 
-void DisplayErrors(int errorCount)
-{
-	printf("Error count: %d\n", errorCount);
-	printf("Error list: \n\n");
-	Error* errors = GetAssemblingErrors(errorCount);
-	for (int i = 0; i < errorCount; i++)
-	{
-		printf("(%d): ", errors[i].lineNumber);
-		puts(errors[i].description);
-	}
-	free(errors);
-}
-
-int TestCode(char* exerciseNum)
+void TestCode(char* exerciseNum)
 {
 	AssembleCode(exerciseNum, "test");
 }
@@ -92,7 +80,7 @@ void AssembleCode(char* exerciseNum, char* type)
 int CheckResult()
 {
 	FILE* fileOutput = fopen("TASM\\Output.txt", "r");
-	if (!CheckFilePointer(fileOutput)) return -1;
+	if (!CheckFilePointer(fileOutput, "CheckResult")) return -1;
 	int result = 0;
 	fscanf(fileOutput, "%d", &result);
 	fclose(fileOutput);
