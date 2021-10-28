@@ -54,10 +54,10 @@ Error* GetAssemblingErrors(int errorCount)
 
 void TestCode(char* exerciseNum)
 {
-	AssembleCode(exerciseNum, "test");
+	AssembleCode(exerciseNum, "test", TRUE);
 }
 
-void AssembleCode(char* exerciseNum, char* type)
+HANDLE AssembleCode(char* exerciseNum, char* name, int run)
 {
 	//type is either code or test
 	MyCopyFileByPath("Configuration.conf", "Configuration_Template.conf");
@@ -67,14 +67,19 @@ void AssembleCode(char* exerciseNum, char* type)
 	_getcwd(path, 100);
 	fprintf(confFile, "mount c %s\\TASM\n", path);
 	fprintf(confFile, "c:\n");
-	char* codePath = GetCodeFilePath(exerciseNum, type, "asm"); //will hold path inside project to the code file
+	char* codePath = GetCodeFilePath(exerciseNum, name, "asm"); //will hold path inside project to the code file
 	fprintf(confFile, "tasm /zi %s > TASM_Out.txt\n", codePath + 5);
-	fprintf(confFile, "tlink /v %s.obj\n", type);
-	fprintf(confFile, "%s.exe > OUTPUT.txt\n", type);
+	fprintf(confFile, "tlink /v %s.obj\n", name);
+	if(run) fprintf(confFile, "%s.exe > OUTPUT.txt\n", name);
 	fprintf(confFile, "exit\n");
 	fclose(confFile);
-	system("Assemble_Code.bat");
 	free(codePath);
+	//Old way was to use a batch file
+	//system("Assemble_Code.bat");
+	//Now we create a process and return its handle
+	PROCESS_INFORMATION pi = MyCreateProcess("DOSBox-0.74-3\\DOSBox.exe", "-conf \"Configuration.conf\" -noconsole", TRUE);
+	CloseHandle(pi.hThread);
+	return pi.hProcess;
 }
 
 int CheckResult()

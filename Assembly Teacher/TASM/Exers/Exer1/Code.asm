@@ -14,6 +14,8 @@ code segment
 
 assume cs: code, ds: data, ss: sta
 
+@@start:
+
 ;Your entering point
 add_and_store proc
 	add ax, bx

@@ -82,14 +82,14 @@ void MyCopyFileByPath(char* dest, char* src)
 	fclose(fileSrc);
 }
 
-char* GetCodeFilePath(char* exerciseNum, char* type, char* ext)
+char* GetCodeFilePath(char* exerciseNum, char* name, char* ext)
 {
 	//This program returns dynamically allocated memory
 	char* path = (char*)malloc(50 * sizeof(char));
 	strcpy(path, "TASM\\Exers\\Exer");
 	strcat(path, exerciseNum);
 	strcat(path, "\\");
-	strcat(path, type);
+	strcat(path, name);
 	strcat(path, ".");
 	strcat(path, ext);
 	return path;
@@ -139,4 +139,43 @@ void CleanGarbageFiles()
 	remove("TASM\\OUTPUT.txt");
 	remove("TASM\\TASM_OUT.txt");
 	remove("Configuration.conf");
+}
+
+PROCESS_INFORMATION MyCreateProcess(char* exeName, char* args, int hidden)
+{
+	STARTUPINFOA si;
+	PROCESS_INFORMATION pi;
+	ZeroMemory(&si, sizeof(si));
+	si.cb = sizeof(si);
+	ZeroMemory(&pi, sizeof(pi));
+	// create argument string
+	INT size = strlen(exeName) + strlen(args) + 2;
+	PCHAR param = (PCHAR)malloc(size * sizeof(CHAR));
+	sprintf(param, "%s %s", exeName, args);
+	int creationFlags = 0;
+	if (hidden)
+	{
+		creationFlags = STARTF_USESHOWWINDOW;
+		//creationFlags = CREATE_NO_WINDOW;
+	}
+	// Start the child process.
+	BOOL processCreated = CreateProcessA
+	(
+		NULL, //Application name
+		param, // Command line
+		NULL, // Process handle not inheritable
+		NULL, // Thread handle not inheritable
+		FALSE, // Set handle inheritance to FALSE
+		creationFlags, // No creation flags
+		NULL, // Use parent's environment block
+		NULL, // Use parent's starting directory
+		&si, // Pointer to STARTUPINFO structure
+		&pi // Pointer to PROCESS_INFORMATION structure
+	);
+	free(param);
+	if (!processCreated)
+	{
+		ThrowError("Failed to create process\n", 0);
+	}
+	return pi;
 }

@@ -1,8 +1,7 @@
-﻿  Code_Handling.c
-  Main.c
-  User_Handling.c
+﻿  File_Handling.c
   Generating code
-  7 of 35 functions (20.0%) were compiled, the rest were copied from previous compilation.
+C:\Users\Ariel\source\repos\Teacher2\Code_Handling.c(83): warning C4715: 'AssembleCode': not all control paths return a value
+  6 of 39 functions (15.4%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
     1 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
