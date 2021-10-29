@@ -6,16 +6,26 @@
 
 void EndProgram()
 {
+	/// <summary>
+	/// This function must be called before closing the program
+	/// It prints a thank you message and cleans garbage files
+	/// </summary>
+	CleanGarbageFiles();
 	system("cls");
 	printf("Thank you for using Assembly Teacher\n");
-	CleanGarbageFiles();
+	Sleep(2000);
 	exit(0);
 }
 
 int GetIntInRange(char* buff, int buffSize, int top)
 {
-	//including top number
-	//Returns boolean value which determines wether the user entered an int
+	/// <summary>
+	/// This function gets from the user an int on the interval [1, top]
+	/// </summary>
+	/// <param name="buff"> Buffer to hold the int as a string, must be allocated </param>
+	/// <param name="buffSize"> The size of the buffer </param>
+	/// <param name="top"> Maximal top integer </param>
+	/// <returns> Boolean value determining if the user entered an int in that range </returns>
 	if (buffSize <= 0)
 	{
 		ThrowError("At GetIntInRange, buffSize <= 0\n", 0);
@@ -45,6 +55,9 @@ int GetIntInRange(char* buff, int buffSize, int top)
 
 void MainMenu()
 {
+	/// <summary>
+	/// The first menu the user sees
+	/// </summary>
 	system("cls");
 	char exerciseNum[4];
 	printf("Choose an exercise number:\n\n");
@@ -66,8 +79,10 @@ void MainMenu()
 
 void ExerciseMenu(char* exerciseNum)
 {
-	//Returns ANOTHER_EXERCISE if user wants to do another exercise after this exercise
-	//Returns DIFFERENT_EXERCISE otherwise
+	/// <summary>
+	/// The menu the user sees after choosing an exercise number
+	/// </summary>
+	/// <param name="exerciseNum"> The exercise number he chose </param>
 	system("cls");
 	printf("Choose an operation:\n\n");
 	printf("(1) ---> Edit code\n");
@@ -108,6 +123,11 @@ void ExerciseMenu(char* exerciseNum)
 
 void ResetCodeFile(char* exerciseNum)
 {
+	/// <summary>
+	/// Each exercise has a code back up file
+	/// The user can choose to revert back any time he wants
+	/// </summary>
+	/// <param name="exerciseNum"> The exercise to reset </param>
 	char* codePath = GetCodeFilePath(exerciseNum, "Code", "asm");
 	char* backUpPath = GetCodeFilePath(exerciseNum, "Code_Backup", "asm");
 	remove(codePath);
@@ -121,6 +141,10 @@ void ResetCodeFile(char* exerciseNum)
 
 void DisplayErrors(int errorCount)
 {
+	/// <summary>
+	/// Finds out and displays the assembling errors 
+	/// </summary>
+	/// <param name="errorCount"> The number of assembling errors </param>
 	printf("Error count: %d\n", errorCount);
 	printf("Error list: \n\n");
 	Error* errors = GetAssemblingErrors(errorCount);
@@ -134,6 +158,10 @@ void DisplayErrors(int errorCount)
 
 void GetCodeFromUser(char* exerciseNum)
 {
+	/// <summary>
+	/// Prints general instructions and lets the user edit the code
+	/// </summary>
+	/// <param name="exerciseNum"> The exercise number </param>
 	system("cls");
 	printf("Write the code in the editor that is going to prompt\n");
 	printf("Close the editor when you are done\n");
@@ -144,6 +172,10 @@ void GetCodeFromUser(char* exerciseNum)
 
 void AssembleCodeToUser(char* exerciseNum)
 {
+	/// <summary>
+	/// Assembles the user's code. If there are any assembling errors it prints them out.
+	/// </summary>
+	/// <param name="exerciseNum"> The exercise number </param>
 	system("cls");
 	printf("Please wait . . . ");
 	//Append end
@@ -161,13 +193,13 @@ void AssembleCodeToUser(char* exerciseNum)
 	system("cls");
 	if (waitType == WAIT_TIMEOUT)
 	{
-		printf("Took too long to test\n");
+		printf("Took too long to assemble\n");
 		printf("Perhaps your code has runtime errors or it stuck at an infinite loop\n");
 		TerminateProcess(DOSBoxHandle, 1);
 	}
 	else
 	{
-		printf("Time took to test: %f\n", secondsTook);
+		printf("Time took to assemble: %f\n", secondsTook);
 		int errorCount = CountAssemblingErrors();
 		if (errorCount)
 		{
@@ -187,6 +219,10 @@ void AssembleCodeToUser(char* exerciseNum)
 
 void LetUserEdit(char* exerciseNum)
 {
+	/// <summary>
+	/// Lets the user edit the code for the exercise
+	/// </summary>
+	/// <param name="exerciseNum"> The exercise number </param>
 	char* path = GetCodeFilePath(exerciseNum, "Code", "asm");
 	system(path);
 	free(path);
@@ -194,6 +230,10 @@ void LetUserEdit(char* exerciseNum)
 
 void TestCodeToUser(char* exercsieNum)
 {
+	/// <summary>
+	/// Tests the user's code and presents the result
+	/// </summary>
+	/// <param name="exercsieNum"> The exercise number </param>
 	system("cls");
 	printf("Please wait . . . ");
 	clock_t start = clock();
@@ -211,7 +251,7 @@ void TestCodeToUser(char* exercsieNum)
 	else
 	{
 		double seconds = CalculateTimePassed(start, end);
-		printf("Time took to assemble: %f\n", seconds);
+		printf("Time took to test: %f\n", seconds);
 		if (errorCount)
 		{
 			printf("Errors when testing code\n");

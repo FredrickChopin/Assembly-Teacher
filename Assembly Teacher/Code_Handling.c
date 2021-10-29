@@ -2,7 +2,11 @@
 #define MAX_ADDRESS_LENGTH 40
 
 int CountAssemblingErrors()
-{ //Counts the number of errors in the compilation process of TASM
+{   
+	/// <summary>
+	/// Counts the number of assembling errors in the recent assembling
+	/// </summary>
+	/// <returns> The count of assembling erorrs </returns>
 	FILE* TASMOut = fopen("TASM\\Tasm_Out.txt", "r");
 	if (!CheckFilePointer(TASMOut, "CountAssemblingErrors")) return -1;
 	char buff[20] = "\0";
@@ -28,7 +32,13 @@ int CountAssemblingErrors()
 
 Error* GetAssemblingErrors(int errorCount)
 {
-	//This program returns dynamically allocated memory
+	/// <summary>
+	/// Allocates an error array dynamically with length of errorCount
+	/// Fills the error array with the recent assembling erorrs
+	/// Memory must be freed
+	/// </summary>
+	/// <param name="errorCount"> The count of assembling errors </param>
+	/// <returns> Dynamic error array filled with the last assembling errors </returns>
 	if (errorCount == 0) return NULL;
 	FILE* TASMOut = fopen("TASM\\Tasm_Out.txt", "r");
 	if (!CheckFilePointer(TASMOut, "GetAssemblingErrors")) return NULL;
@@ -54,6 +64,13 @@ Error* GetAssemblingErrors(int errorCount)
 
 HANDLE TestCode(char* exerciseNum)
 {
+	/// <summary>
+	/// Assembles and runs the test file
+	/// Returns handle to the DOSBox
+	/// The handle must be closed afterwards
+	/// </summary>
+	/// <param name="exerciseNum"> The exercise number</param>
+	/// <returns> Returns handle to the DOSBox </returns>
 	return AssembleCode(exerciseNum, "test", 1);
 }
 
