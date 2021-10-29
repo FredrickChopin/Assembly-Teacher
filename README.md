@@ -6,7 +6,7 @@ he passed all the cases or failed at least one.
 The algorithm goes like that:
 1) Let the user choose an exercise number.
 Each exercise has its own folder, which is located at one of the folders at TASM/Exers
-In each exercise folder there are 2 files - Code.asm and Test.asm - a deeper explaination is given later.
+In each exercise folder there are 3 files - Code.asm, Test.asm and Code_Backup.asm - a deeper explaination is given later.
 
 2) Let the user edit the code.
 If he choses to edit, the Code.asm file, specific to the exercise, will be open.
