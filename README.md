@@ -31,7 +31,7 @@ If there are no errors we go on, else, we give the user a chance to edit the cod
 4) Test the code
 Here comes the role of Test.asm
 For each exercise, there is a pre-made assembly program which tests the code.
-Test.asm uses general functions from the file named Basic.asm at TASM\Exers
+Test.asm uses general functions from the file named Basic.asm at TASM\Exers.
 The testing is done by running a number of pre-determined cases. 
 Each case consists of input and expected output.
 The assembling is done just like in 3)
