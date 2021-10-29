@@ -40,7 +40,7 @@ Its content is 1 if all cases passed and 0 otherwise.
 If the user code failed at least one test case, he is given a chance to edit the code
 
 Plans for the future:
-1) Add a mechanism for handling code that halts or goes into an infinite loop. Perhaps this could be done by setting a reasonable waiting time, e.g 5 seconds.
+1) Add a mechanism for handling code that halts or goes into an infinite loop. Perhaps this could be done by setting a reasonable waiting time, e.g 5 seconds. (Added)
 2) Add more exercises
 3) Expand the types of exercises. So far, the exercises are only of type "Write a function...". We may want to allow the user to write a full assembly program.
 4) Add procedures to the Basic.asm file, so it will be easier to design future exercises
