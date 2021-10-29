@@ -49,6 +49,11 @@ Error* GetAssemblingErrors(int errorCount)
 	char buff[40];
 	buff[0] = '\0';
 	Error* errors = (Error*)malloc(errorCount * sizeof(Error));
+	if (!errors)
+	{
+		ThrowError("Unable to allocate dynamic memory in GetAssemblingErrors\n", 0);
+		return NULL;
+	}
 	int i = 0;
 	for (i = 0; i < errorCount; i++)
 	{
@@ -79,7 +84,7 @@ HANDLE AssembleCode(char* exerciseNum, char* name, int run)
 	//type is either code or test
 	MyCopyFileByPath("Configuration.conf", "Configuration_Template.conf");
 	FILE* confFile = fopen("Configuration.conf", "a");
-	if (!confFile) return;
+	if (!CheckFilePointer(confFile, "AssembleCode")) return NULL;
 	char path[100]; //will hold current directory
 	_getcwd(path, 100);
 	fprintf(confFile, "mount c %s\\TASM\n", path);

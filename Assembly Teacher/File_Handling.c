@@ -129,12 +129,12 @@ char* GetCodeFilePath(char* exerciseNum, char* name, char* ext)
 	/// <param name="ext"></param>
 	/// <returns> Dynamically allocated string which hold the path to the wanted code file</returns>
 	char* path = (char*)malloc(50 * sizeof(char));
-	strcpy(path, "TASM\\Exers\\Exer");
-	strcat(path, exerciseNum);
-	strcat(path, "\\");
-	strcat(path, name);
-	strcat(path, ".");
-	strcat(path, ext);
+	if (!path)
+	{
+		ThrowError("Unable to allocate dynamic memory in GetCodeFilePath", 0);
+		return NULL;
+	}
+	sprintf_s(path, 50, "TASM\\Exers\\Exer%s\\%s.%s", exerciseNum, name, ext);
 	return path;
 }
 

@@ -17,4 +17,4 @@ int CountAssemblingErrors();
 Error* GetAssemblingErrors(int errorCount);
 HANDLE TestCode(char* exerciseNum);
 int CheckResult();
-HANDLE AssembleCode(char* exerciseNum, char* name);
+HANDLE AssembleCode(char* exerciseNum, char* name, int run);

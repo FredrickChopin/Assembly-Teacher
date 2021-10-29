@@ -3,10 +3,8 @@
 #include <Windows.h>
 #include <stdlib.h>
 #include <string.h>
-#include <conio.h>
 #include <Windows.h>
 #include <direct.h>
 #include <stdio.h>
-#include <string.h>
 #include <ctype.h>
 #include <time.h>

@@ -1,8 +1,7 @@
 #include "User_Handling.h"
-#define MIL_SECONDS_TO_WAIT 5000
+#define MIL_SECONDS_TO_WAIT 2800
 #define EXERCISE_COUNT 2 //The amount of current exercises available + 1
 #define OPERATION_COUNT 6 
-#define MIL_SECONDS_TO_WAIT 2800
 
 void EndProgram()
 {
@@ -13,7 +12,6 @@ void EndProgram()
 	CleanGarbageFiles();
 	system("cls");
 	printf("Thank you for using Assembly Teacher\n");
-	Sleep(2000);
 	exit(0);
 }
 
@@ -58,23 +56,25 @@ void MainMenu()
 	/// <summary>
 	/// The first menu the user sees
 	/// </summary>
-	system("cls");
-	char exerciseNum[4];
-	printf("Choose an exercise number:\n\n");
-	printf("Exercise ---> (1)\n");
-	printf("Exit ---> (2)\n\n");
-	int success = GetIntInRange(exerciseNum, 4, EXERCISE_COUNT);
-	if (atoi(exerciseNum) == EXERCISE_COUNT)
+	while (1)
 	{
-		EndProgram();
+		system("cls");
+		char exerciseNum[4];
+		printf("Choose an exercise number:\n\n");
+		printf("Exercise ---> (1)\n");
+		printf("Exit ---> (2)\n\n");
+		int success = GetIntInRange(exerciseNum, 4, EXERCISE_COUNT);
+		if (atoi(exerciseNum) == EXERCISE_COUNT)
+		{
+			EndProgram();
+		}
+		if (!success)
+		{
+			MainMenu();
+			return;
+		}
+		ExerciseMenu(exerciseNum);
 	}
-	if (!success)
-	{
-		MainMenu();
-		return;
-	}
-	ExerciseMenu(exerciseNum);
-	MainMenu();
 }
 
 void ExerciseMenu(char* exerciseNum)
@@ -83,42 +83,44 @@ void ExerciseMenu(char* exerciseNum)
 	/// The menu the user sees after choosing an exercise number
 	/// </summary>
 	/// <param name="exerciseNum"> The exercise number he chose </param>
-	system("cls");
-	printf("Choose an operation:\n\n");
-	printf("(1) ---> Edit code\n");
-	printf("(2) ---> Check for code errors\n");
-	printf("(3) ---> Test code\n");
-	printf("(4) ---> Reset code file\n");
-	printf("(5) ---> Go back\n\n");
-	char input[3];
-	int success = GetIntInRange(input, 3, OPERATION_COUNT);
-	if (!success)
+	while (1)
 	{
-		ExerciseMenu(exerciseNum);
-		return;
+		system("cls");
+		printf("Choose an operation:\n\n");
+		printf("(1) ---> Edit code\n");
+		printf("(2) ---> Check for code errors\n");
+		printf("(3) ---> Test code\n");
+		printf("(4) ---> Reset code file\n");
+		printf("(5) ---> Go back\n\n");
+		char input[3];
+		int success = GetIntInRange(input, 3, OPERATION_COUNT);
+		if (!success)
+		{
+			ExerciseMenu(exerciseNum);
+			return;
+		}
+		int num = atoi(input);
+		if (num == 1)
+		{
+			GetCodeFromUser(exerciseNum);
+		}
+		else if (num == 2)
+		{
+			AssembleCodeToUser(exerciseNum);
+		}
+		else if (num == 3)
+		{
+			TestCodeToUser(exerciseNum);
+		}
+		else if (num == 4)
+		{
+			ResetCodeFile(exerciseNum);
+		}
+		else //if (num == 5)
+		{
+			return;
+		}
 	}
-	int num = atoi(input);
-	if (num == 1)
-	{
-		GetCodeFromUser(exerciseNum);
-	}
-	else if (num == 2)
-	{
-		AssembleCodeToUser(exerciseNum);
-	}
-	else if (num == 3)
-	{
-		TestCodeToUser(exerciseNum);
-	}
-	else if (num == 4)
-	{
-		ResetCodeFile(exerciseNum);
-	}
-	else //if (num == 5)
-	{
-		return;
-	}
-	ExerciseMenu(exerciseNum);
 }
 
 void ResetCodeFile(char* exerciseNum)
@@ -185,10 +187,10 @@ void AssembleCodeToUser(char* exerciseNum)
 	fprintf(codeFile, "\nend");
 	fclose(codeFile);
 	//Start running
-	time_t start = clock();
+	size_t start = clock();
 	HANDLE DOSBoxHandle = AssembleCode(exerciseNum, "Code", 0);
 	DWORD waitType = WaitForSingleObject(DOSBoxHandle, MIL_SECONDS_TO_WAIT);
-	time_t end = clock();
+	size_t end = clock();
 	double secondsTook = CalculateTimePassed(start, end);
 	system("cls");
 	if (waitType == WAIT_TIMEOUT)

@@ -3,7 +3,7 @@
 
  00000H 003FFH 00400H STA                
  00400H 0041CH 0001DH DATA               
- 00420H 004AAH 0008BH CODE               
+ 00420H 004A6H 00087H CODE               
 
-Program entry point at 0042:0039
+Program entry point at 0042:0035
 
