@@ -99,6 +99,7 @@ HANDLE AssembleCode(char* exerciseNum, char* name, int run)
 	//Old way was to use a batch file
 	//system("Assemble_Code.bat");
 	//Now we create a process and return its handle
+	//PROCESS_INFORMATION pi = MyCreateProcess("DOSBox-0.74-3\\DOSBox.exe", "-conf Configuration.conf -noconsole");
 	PROCESS_INFORMATION pi = MyCreateProcess("Assemble_Code.bat", "");
 	CloseHandle(pi.hThread);
 	return pi.hProcess;

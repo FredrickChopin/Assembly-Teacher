@@ -30,7 +30,7 @@ void ThrowError(char* str, int freeStr)
 	/// </summary>
 	/// <param name="str"> The error message</param>
 	/// <param name="freeStr"> Wether the error message must be freed or not </param>
-	printf("%s\n", str);
+	printf("\n%s\n", str);
 	system("pause");
 	if (freeStr) free(str);
 	CleanGarbageFiles();
@@ -219,15 +219,22 @@ PROCESS_INFORMATION MyCreateProcess(char* exeName, char* args)
 	/// <param name="args"> The command-line arguments to create the process with </param>
 	/// <returns> Process-Information struct </returns>
 	STARTUPINFOA si;
-	PROCESS_INFORMATION pi;
 	ZeroMemory(&si, sizeof(si));
-	si.cb = sizeof(si);
+	si.cb = sizeof(STARTUPINFO);
+	si.dwFlags = STARTF_USESHOWWINDOW;
+	si.wShowWindow = SW_HIDE;
+	PROCESS_INFORMATION pi;
 	ZeroMemory(&pi, sizeof(pi));
 	// create argument string
 	INT size = strlen(exeName) + strlen(args) + 2;
 	PCHAR param = (PCHAR)malloc(size * sizeof(CHAR));
+	if (!param)
+	{
+		ThrowError("Couldn't allocate memory for param in MyCreateProcess", 0);
+	}
 	sprintf(param, "%s %s", exeName, args);
 	// Start the child process.
+	system("set sdl_videodriver = dummy");
 	BOOL processCreated = CreateProcessA
 	(
 		NULL, //Application name

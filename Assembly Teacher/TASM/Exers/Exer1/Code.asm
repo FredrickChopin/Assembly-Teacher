@@ -18,7 +18,9 @@ assume cs: code, ds: data, ss: sta
 
 ;Your entering point
 add_and_store proc
-
+	@@LI:
+	jmp @@LI
+	add ax, bx
 	ret ;Make sure to return by writing ret, without any number following
 add_and_store endp
 
