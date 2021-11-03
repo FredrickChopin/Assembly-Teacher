@@ -39,6 +39,10 @@ The testing program always outputs a file named OUTPUT.txt at TASM folder.
 Its content is 1 if all cases passed and 0 otherwise.
 If the user code failed at least one test case, he is given a chance to edit the code
 
+Current problems:
+With GetAssemblingErrors - doesn't work properly if the error is not in the code.asm file.
+Need to rethink how to structure the tests and the Basic.asm file, to prevent procedure naming collisions
+
 Plans for the future:
 1) Add a mechanism for handling code that halts or goes into an infinite loop. Perhaps this could be done by setting a reasonable waiting time, e.g 5 seconds. (Added)
 2) Add more exercises
