@@ -1,4 +1,4 @@
-;Write a procedure called add_and_store that stores the sum of ax and bx into cx
+;Write a function called add_and_store that stores the sum of ax and bx into cx
 
 LOCALS @@
 

@@ -67,6 +67,52 @@ Error* GetAssemblingErrors(int errorCount)
 	return errors;
 }
 
+PROCESS_INFORMATION MyCreateProcess(char* exeName, char* args)
+{
+	/// <summary>
+	/// Starts a process with a name exeName and args args
+	/// </summary>
+	/// <param name="exeName"> The name of the executable file</param>
+	/// <param name="args"> The command-line arguments to create the process with </param>
+	/// <returns> Process-Information struct </returns>
+	STARTUPINFOA si;
+	ZeroMemory(&si, sizeof(si));
+	si.cb = sizeof(STARTUPINFO);
+	si.dwFlags = STARTF_USESHOWWINDOW;
+	si.wShowWindow = SW_HIDE;
+	PROCESS_INFORMATION pi;
+	ZeroMemory(&pi, sizeof(pi));
+	// create argument string
+	INT size = strlen(exeName) + strlen(args) + 2;
+	PCHAR param = (PCHAR)malloc(size * sizeof(CHAR));
+	if (!param)
+	{
+		ThrowError("Couldn't allocate memory for param in MyCreateProcess", 0);
+	}
+	sprintf(param, "%s %s", exeName, args);
+	// Start the child process.
+	system("set sdl_videodriver = dummy");
+	BOOL processCreated = CreateProcessA
+	(
+		NULL, //Application name
+		param, // Command line
+		NULL, // Process handle not inheritable
+		NULL, // Thread handle not inheritable
+		FALSE, // Set handle inheritance to FALSE
+		0, // No creation flags
+		NULL, // Use parent's environment block
+		NULL, // Use parent's starting directory
+		&si, // Pointer to STARTUPINFO structure
+		&pi // Pointer to PROCESS_INFORMATION structure
+	);
+	free(param);
+	if (!processCreated)
+	{
+		ThrowError("Failed to create process\n", 0);
+	}
+	return pi;
+}
+
 HANDLE TestCode(char* exerciseNum)
 {
 	/// <summary>
@@ -81,7 +127,13 @@ HANDLE TestCode(char* exerciseNum)
 
 HANDLE AssembleCode(char* exerciseNum, char* name, int run)
 {
-	//type is either code or test
+	/// <summary>
+	/// Assembles code to user.
+	/// </summary>
+	/// <param name="exerciseNum"> The number of exercise</param>
+	/// <param name="name"> The name of the file, e.g "Test", "Code"</param>
+	/// <param name="run"> Boolean value determining wether to also run the code</param>
+	/// <returns> HANDLE to the DOSBox created process </returns>
 	MyCopyFileByPath("Configuration.conf", "Configuration_Template.conf");
 	FILE* confFile = fopen("Configuration.conf", "a");
 	if (!CheckFilePointer(confFile, "AssembleCode")) return NULL;
@@ -105,8 +157,34 @@ HANDLE AssembleCode(char* exerciseNum, char* name, int run)
 	return pi.hProcess;
 }
 
+HANDLE CreateJobAssignProcess(HANDLE process)
+{
+	/// <summary>
+	/// Creates a new job object and assigns it the given process
+	/// We use this function after creating the Assemble_Code.bat process
+	/// in order to assign it to a job
+	/// Assigning it to a job allows us to then terminate the DOSBox which the
+	/// Assemble_Code.bat creates
+	/// </summary>
+	/// <param name="process"> HANDLE to a process </param>
+	/// <returns> HANDLE to the newly created job object</returns>
+	HANDLE job = CreateJobObjectA(NULL, NULL);
+	if (job == NULL)
+	{
+		ThrowError("Couldn't create job object at AssignProcessToJob\n", 0);
+		return NULL;
+	}
+	AssignProcessToJobObject(job, process);
+	return job;
+}
+
 int CheckResult()
 {
+	/// <summary>
+	/// Opens the TASM\Output.txt file, which is the ouput the Test.asm program created
+	/// Checks if there's a 1 or a 0 there
+	/// </summary>
+	/// <returns> Wether user's code successfully completed the task</returns>
 	FILE* fileOutput = fopen("TASM\\Output.txt", "r");
 	if (!CheckFilePointer(fileOutput, "CheckResult")) return -1;
 	int result = 0;

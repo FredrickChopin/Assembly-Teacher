@@ -1,7 +1,7 @@
 #include "User_Handling.h"
 #define MIL_SECONDS_TO_WAIT 2800
-#define EXERCISE_COUNT 2 //The amount of current exercises available + 1
-#define OPERATION_COUNT 6 
+#define EXERCISE_COUNT 1 //The amount of current exercises available
+#define OPERATION_COUNT 7  //The amount of operations avaiable in the ExerciseMenu
 
 void EndProgram()
 {
@@ -63,8 +63,8 @@ void MainMenu()
 		printf("Choose an exercise number:\n\n");
 		printf("Exercise ---> (1)\n");
 		printf("Exit ---> (2)\n\n");
-		int success = GetIntInRange(exerciseNum, 4, EXERCISE_COUNT);
-		if (atoi(exerciseNum) == EXERCISE_COUNT)
+		int success = GetIntInRange(exerciseNum, 4, EXERCISE_COUNT + 1);
+		if (atoi(exerciseNum) == EXERCISE_COUNT + 1)
 		{
 			EndProgram();
 		}
@@ -91,7 +91,8 @@ void ExerciseMenu(char* exerciseNum)
 		printf("(2) ---> Check for code errors\n");
 		printf("(3) ---> Test code\n");
 		printf("(4) ---> Reset code file\n");
-		printf("(5) ---> Go back\n\n");
+		printf("(5) ---> Go back\n");
+		printf("(6) ---> Exit\n\n");
 		char input[3];
 		int success = GetIntInRange(input, 3, OPERATION_COUNT);
 		if (!success)
@@ -116,9 +117,13 @@ void ExerciseMenu(char* exerciseNum)
 		{
 			ResetCodeFile(exerciseNum);
 		}
-		else //if (num == 5)
+		else if (num == 5)
 		{
 			return;
+		}
+		else
+		{
+			EndProgram();
 		}
 	}
 }
@@ -189,6 +194,7 @@ void AssembleCodeToUser(char* exerciseNum)
 	//Start running
 	size_t start = clock();
 	HANDLE DOSBoxHandle = AssembleCode(exerciseNum, "Code", 0);
+	HANDLE DOSBoxJob = CreateJobAssignProcess(DOSBoxHandle);
 	DWORD waitType = WaitForSingleObject(DOSBoxHandle, MIL_SECONDS_TO_WAIT);
 	size_t end = clock();
 	double secondsTook = CalculateTimePassed(start, end);
@@ -197,7 +203,7 @@ void AssembleCodeToUser(char* exerciseNum)
 	{
 		printf("Took too long to assemble\n");
 		printf("Perhaps your code has runtime errors or it stuck at an infinite loop\n");
-		TerminateProcess(DOSBoxHandle, 1);
+		TerminateJobObject(DOSBoxJob, 1);
 	}
 	else
 	{
@@ -214,6 +220,7 @@ void AssembleCodeToUser(char* exerciseNum)
 		}
 	}
 	CloseHandle(DOSBoxHandle);
+	CloseHandle(DOSBoxJob);
 	TruncateFromEnd(path, 4);
 	free(path);
 	system("pause");
@@ -240,6 +247,7 @@ void TestCodeToUser(char* exercsieNum)
 	printf("Please wait . . . ");
 	clock_t start = clock();
 	HANDLE DOSBoxHandle = TestCode(exercsieNum);
+	HANDLE DOSBoxJob = CreateJobAssignProcess(DOSBoxHandle);
 	DWORD waitType = WaitForSingleObject(DOSBoxHandle, MIL_SECONDS_TO_WAIT);
 	int errorCount = CountAssemblingErrors();
 	clock_t end = clock();
@@ -248,7 +256,7 @@ void TestCodeToUser(char* exercsieNum)
 	{
 		printf("Took too long to test\n");
 		printf("Perhaps your code has runtime errors or it stuck at an infinite loop\n");
-		TerminateProcess(DOSBoxHandle, 1);
+		TerminateJobObject(DOSBoxJob, 1);
 	}
 	else
 	{
@@ -276,5 +284,6 @@ void TestCodeToUser(char* exercsieNum)
 		}
 	}
 	CloseHandle(DOSBoxHandle);
+	CloseHandle(DOSBoxJob);
 	system("pause");
 }

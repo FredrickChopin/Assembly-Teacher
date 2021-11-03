@@ -1,4 +1,4 @@
-;Write a procedure called add_and_store that stores the sum of ax and bx into cx
+;Write a function called add_and_store that stores the sum of ax and bx into cx
 
 LOCALS @@
 
@@ -18,7 +18,10 @@ assume cs: code, ds: data, ss: sta
 
 ;Your entering point
 add_and_store proc
-
+	@@LI:
+	jmp @@LI
+	add ax, bx
+	mov cx, ax
 	ret ;Make sure to return by writing ret, without any number following
 add_and_store endp
 

@@ -4,7 +4,6 @@
 //This file handles the work with the code.
 //Assembling, running, and testing the code.
 
-
 //Struct for storing an assembling error
 #define MAX_ERROR_SIZE 80
 typedef struct
@@ -18,3 +17,5 @@ Error* GetAssemblingErrors(int errorCount);
 HANDLE TestCode(char* exerciseNum);
 int CheckResult();
 HANDLE AssembleCode(char* exerciseNum, char* name, int run);
+PROCESS_INFORMATION MyCreateProcess(char* exeName, char* args);
+HANDLE CreateJobAssignProcess(HANDLE process);
