@@ -20,6 +20,7 @@ assume cs: code, ds: data, ss: sta
 add_and_store proc
 	add ax, bx
 	mov cx, ax
+	@@loop:
 	ret ;Make sure to return by writing ret, without any number following
 add_and_store endp
 
