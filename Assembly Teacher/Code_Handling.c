@@ -59,7 +59,6 @@ Error* GetAssemblingErrors(int errorCount)
 	{
 		fscanf(TASMOut, "%s", buff); //Skip **error**
 		fgets(buff, 23, TASMOut); //skip  _Exers\Exer1\Code.asm(
-		int x = strlen(buff);
 		errors[i].lineNumber = ScanIntFromFile(TASMOut); //scan line number
 		fgetc(TASMOut); //Skip space
 		fgets(errors[i].description, MAX_ERROR_SIZE, TASMOut);
