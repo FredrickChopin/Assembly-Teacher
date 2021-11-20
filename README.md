@@ -40,7 +40,8 @@ Its content is 1 if all cases passed and 0 otherwise.
 If the user code failed at least one test case, he is given a chance to edit the code
 
 Current problems:
-With GetAssemblingErrors - doesn't work properly if the error is not in the code.asm file.
+With CountAssemblingErrors() and GetAssemblingErrors() won't work properly if there are more than 9 exercises and it reports unwantingly errors from files
+other than Code.asm
 Need to rethink how to structure the tests and the Basic.asm file, to prevent procedure naming collisions
 
 Plans for the future:
