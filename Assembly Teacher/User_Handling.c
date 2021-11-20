@@ -1,7 +1,7 @@
 #include "User_Handling.h"
 #define MIL_SECONDS_TO_WAIT 2800
 #define EXERCISE_COUNT 1 //The amount of current exercises available
-#define OPERATION_COUNT 7  //The amount of operations avaiable in the ExerciseMenu
+#define OPERATION_COUNT 6  //The amount of operations avaiable in the ExerciseMenu
 
 void EndProgram()
 {
@@ -88,11 +88,10 @@ void ExerciseMenu(char* exerciseNum)
 		system("cls");
 		printf("Choose an operation:\n\n");
 		printf("(1) ---> Edit code\n");
-		printf("(2) ---> Check for code errors\n");
-		printf("(3) ---> Test code\n");
-		printf("(4) ---> Reset code file\n");
-		printf("(5) ---> Go back\n");
-		printf("(6) ---> Exit\n\n");
+		printf("(2) ---> Test code\n");
+		printf("(3) ---> Reset code file\n");
+		printf("(4) ---> Go back\n");
+		printf("(5) ---> Exit\n\n");
 		char input[3];
 		int success = GetIntInRange(input, 3, OPERATION_COUNT);
 		if (!success)
@@ -107,17 +106,13 @@ void ExerciseMenu(char* exerciseNum)
 		}
 		else if (num == 2)
 		{
-			AssembleCodeToUser(exerciseNum);
+			TestCodeToUser(exerciseNum);
 		}
 		else if (num == 3)
 		{
-			TestCodeToUser(exerciseNum);
-		}
-		else if (num == 4)
-		{
 			ResetCodeFile(exerciseNum);
 		}
-		else if (num == 5)
+		else if (num == 4)
 		{
 			return;
 		}
@@ -146,7 +141,7 @@ void ResetCodeFile(char* exerciseNum)
 	system("pause");
 }
 
-void DisplayErrors(int errorCount)
+void DisplayErrors(int errorCount, char* exerciseNum)
 {
 	/// <summary>
 	/// Finds out and displays the assembling errors 
@@ -154,7 +149,7 @@ void DisplayErrors(int errorCount)
 	/// <param name="errorCount"> The number of assembling errors </param>
 	printf("Error count: %d\n", errorCount);
 	printf("Error list: \n\n");
-	Error* errors = GetAssemblingErrors(errorCount);
+	Error* errors = GetAssemblingErrors(errorCount, exerciseNum);
 	for (int i = 0; i < errorCount; i++)
 	{
 		printf("(%d): ", errors[i].lineNumber);
@@ -177,7 +172,7 @@ void GetCodeFromUser(char* exerciseNum)
 	LetUserEdit(exerciseNum);
 }
 
-void AssembleCodeToUser(char* exerciseNum)
+/*void AssembleCodeToUser(char* exerciseNum)
 {
 	/// <summary>
 	/// Assembles the user's code. If there are any assembling errors it prints them out.
@@ -202,7 +197,7 @@ void AssembleCodeToUser(char* exerciseNum)
 	if (waitType == WAIT_TIMEOUT)
 	{
 		printf("Took too long to assemble\n");
-		printf("Perhaps your code has runtime errors or it stuck at an infinite loop\n");
+		printf("This shouldn't happen\n");
 		TerminateJobObject(DOSBoxJob, 1);
 	}
 	else
@@ -224,7 +219,7 @@ void AssembleCodeToUser(char* exerciseNum)
 	TruncateFromEnd(path, 4);
 	free(path);
 	system("pause");
-}
+}*/
 
 void LetUserEdit(char* exerciseNum)
 {
@@ -255,20 +250,21 @@ void TestCodeToUser(char* exercsieNum)
 	if (waitType == WAIT_TIMEOUT)
 	{
 		printf("Took too long to test\n");
-		printf("Perhaps your code has runtime errors or it stuck at an infinite loop\n");
+		printf("Perhaps your code has runtime errors or is stuck at an infinite loop\n");
 		TerminateJobObject(DOSBoxJob, 1);
 	}
 	else
 	{
 		double seconds = CalculateTimePassed(start, end);
-		printf("Time took to test: %f\n", seconds);
+		printf("Time took to test: %.2f\n", seconds);
 		if (errorCount)
 		{
 			printf("Errors when testing code\n");
-			DisplayErrors(errorCount);
+			DisplayErrors(errorCount, exercsieNum);
 			system("pause");
 			return;
 		}
+		printf("No assembling errors\n");
 		int result = CheckResult();
 		if (result == 1)
 		{
@@ -276,7 +272,7 @@ void TestCodeToUser(char* exercsieNum)
 		}
 		else if (result == 0)
 		{
-			printf("At least one test case failed\n");
+			printf("Your code has failed the test\n");
 		}
 		else
 		{

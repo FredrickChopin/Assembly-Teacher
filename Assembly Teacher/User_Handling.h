@@ -1,3 +1,4 @@
+#pragma once
 #include "Libaries.h"
 //#include "File_Handling.h"
 #include "Code_Handling.h"
@@ -15,5 +16,5 @@ int GetIntInRange(char* buff, int buffSize, int top);
 void EndProgram();
 void MainMenu();
 void ExerciseMenu(char* exerciseNum);
-void DisplayErrors(int errorCount);
+void DisplayErrors(int errorCount, char* exerciseNum);
 void ResetCodeFile(char* exerciseNum);

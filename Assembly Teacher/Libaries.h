@@ -1,4 +1,5 @@
 //This file contains all the includes for C libaries
+#pragma once
 #define _CRT_SECURE_NO_WARNINGS
 #include <Windows.h>
 #include <stdlib.h>

@@ -157,6 +157,7 @@ int FindFileLength(char* path)
 	return length;
 }
 
+//This function is unused
 void TruncateFromEnd(char* path, int n)
 {
 	/// <summary>
@@ -183,7 +184,7 @@ void TruncateFromEnd(char* path, int n)
 	fclose(original);
 	remove(path);
 	rename("temp.txt", path);
-}
+} 
 
 void CleanGarbageFiles()
 {

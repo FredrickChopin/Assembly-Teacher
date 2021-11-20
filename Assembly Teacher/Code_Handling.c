@@ -30,7 +30,7 @@ int CountAssemblingErrors()
 	return -1;
 }
 
-Error* GetAssemblingErrors(int errorCount)
+Error* GetAssemblingErrors(int errorCount, char* exerciseNum)
 {
 	/// <summary>
 	/// Allocates an error array dynamically with length of errorCount
@@ -58,7 +58,7 @@ Error* GetAssemblingErrors(int errorCount)
 	for (i = 0; i < errorCount; i++)
 	{
 		fscanf(TASMOut, "%s", buff); //Skip **error**
-		fgets(buff, 23, TASMOut); //skip  _Exers\Exer1\Code.asm(
+		fgets(buff, 22 + strlen(exerciseNum), TASMOut); //skip  _Exers\Exer1\Code.asm(
 		errors[i].lineNumber = ScanIntFromFile(TASMOut); //scan line number
 		fgetc(TASMOut); //Skip space
 		fgets(errors[i].description, MAX_ERROR_SIZE, TASMOut);
@@ -151,7 +151,6 @@ HANDLE AssembleCode(char* exerciseNum, char* name, int run)
 	//Old way was to use a batch file
 	//system("Assemble_Code.bat");
 	//Now we create a process and return its handle
-	//PROCESS_INFORMATION pi = MyCreateProcess("DOSBox-0.74-3\\DOSBox.exe", "-conf Configuration.conf -noconsole");
 	PROCESS_INFORMATION pi = MyCreateProcess("Assemble_Code.bat", "");
 	CloseHandle(pi.hThread);
 	return pi.hProcess;

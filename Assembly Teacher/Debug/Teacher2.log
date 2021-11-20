@@ -1,0 +1,3 @@
+﻿  User_Handling.c
+C:\Users\Ariel\source\repos\Teacher2\User_Handling.c(78): warning C4717: 'MainMenu': recursive on all control paths, function will cause runtime stack overflow
+  Teacher2.vcxproj -> C:\Users\Ariel\source\repos\Teacher2\Debug\Teacher2.exe

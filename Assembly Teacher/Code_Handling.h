@@ -1,4 +1,5 @@
 #include "Libaries.h"
+#pragma once
 #include "File_Handling.h"
 
 //This file handles the work with the code.
@@ -13,7 +14,7 @@ typedef struct
 }Error;
 
 int CountAssemblingErrors();
-Error* GetAssemblingErrors(int errorCount);
+Error* GetAssemblingErrors(int errorCount, char* exerciseNum);
 HANDLE TestCode(char* exerciseNum);
 int CheckResult();
 HANDLE AssembleCode(char* exerciseNum, char* name, int run);

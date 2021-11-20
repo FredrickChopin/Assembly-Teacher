@@ -3,38 +3,38 @@
 STACK_OFFSET = 18
 
 data segment
-	var_next_instruction dw ?
+	next_instruction_teacher dw ?
 data ends
 
 code segment 
 assume cs: code, ds: data ,ss: sta
 
-print_char proc
-	call push_registers
+print_char_teacher proc
+	call push_registers_teacher
 	mov bp, sp
 	mov dx, [bp + STACK_OFFSET]
 	mov ah, 2h
 	int 21h
-	call pop_registers
+	call pop_registers_teacher
 	ret 2
-print_char endp
+print_char_teacher endp
 
-push_registers proc
-	pop var_next_instruction
+push_registers_teacher proc
+	pop next_instruction_teacher
 	irp register, <bx, cx, dx, ds, es, di, si, bp>
 		push register
 	endm
-	push var_next_instruction
+	push next_instruction_teacher
 	ret
-push_registers endp
+push_registers_teacher endp
 
-pop_registers proc
-	pop var_next_instruction
+pop_registers_teacher proc
+	pop next_instruction_teacher
 	irp register, <bp, si, di, es, ds, dx, cx ,bx>
 		pop register
 	endm
-	push var_next_instruction
+	push next_instruction_teacher
 	ret
-pop_registers endp
+pop_registers_teacher endp
 
 code ends

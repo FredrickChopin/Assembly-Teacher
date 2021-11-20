@@ -1,3 +1,4 @@
+#pragma once
 #include "Libaries.h"
 
 //This file contains general and specific functions that deal with files
