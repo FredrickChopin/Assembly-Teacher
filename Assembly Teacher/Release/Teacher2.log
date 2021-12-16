@@ -1,6 +1,0 @@
-﻿  Code_Handling.c
-  Generating code
-  Previous IPDB and IOBJ mismatch, fall back to full compilation.
-  All 39 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
-  Finished generating code
-  Teacher2.vcxproj -> C:\Users\Ariel\source\repos\Teacher2\Release\Teacher2.exe

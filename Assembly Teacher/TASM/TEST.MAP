@@ -2,8 +2,8 @@
  Start  Stop   Length Name               Class
 
  00000H 003FFH 00400H STA                
- 00400H 0041CH 0001DH DATA               
- 00420H 004AAH 0008BH CODE               
+ 00400H 0040DH 0000EH DATA               
+ 00410H 0047BH 0006CH CODE               
 
-Program entry point at 0042:0039
+Program entry point at 0041:0035
 

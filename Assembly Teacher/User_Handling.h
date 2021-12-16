@@ -15,6 +15,7 @@ double CalculateTimePassed(size_t start, size_t end);
 int GetIntInRange(char* buff, int buffSize, int top);
 void EndProgram();
 void MainMenu();
+void ShowSolutionToUser(char* exerciseNum);
 void ExerciseMenu(char* exerciseNum);
-void DisplayErrors(int errorCount, char* exerciseNum);
+void DisplayErrors(int errorCount, char* exerciseNum, FILE* stream, int commentErrors);
 void ResetCodeFile(char* exerciseNum);

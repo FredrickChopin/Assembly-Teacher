@@ -1,7 +1,12 @@
 #include "User_Handling.h"
 #define MIL_SECONDS_TO_WAIT 2800
-#define EXERCISE_COUNT 1 //The amount of current exercises available
-#define OPERATION_COUNT 6  //The amount of operations avaiable in the ExerciseMenu
+#define EXERCISE_COUNT 2 //The amount of current exercises available
+
+typedef struct Option
+{
+	void (*function)(char*);
+	char name[20];
+}Option;
 
 void EndProgram()
 {
@@ -61,19 +66,21 @@ void MainMenu()
 		system("cls");
 		char exerciseNum[4];
 		printf("Choose an exercise number:\n\n");
-		printf("Exercise ---> (1)\n");
-		printf("Exit ---> (2)\n\n");
+		int i;
+		for (i = 1; i <= EXERCISE_COUNT; i++)
+		{
+			printf("Exercise %d ---> (%d)\n", i, i);
+		}
+		printf("Exit ---> (%d)\n\n", EXERCISE_COUNT + 1);
 		int success = GetIntInRange(exerciseNum, 4, EXERCISE_COUNT + 1);
 		if (atoi(exerciseNum) == EXERCISE_COUNT + 1)
 		{
 			EndProgram();
 		}
-		if (!success)
+		if (success)
 		{
-			MainMenu();
-			return;
+			ExerciseMenu(exerciseNum);
 		}
-		ExerciseMenu(exerciseNum);
 	}
 }
 
@@ -83,44 +90,48 @@ void ExerciseMenu(char* exerciseNum)
 	/// The menu the user sees after choosing an exercise number
 	/// </summary>
 	/// <param name="exerciseNum"> The exercise number he chose </param>
+	Option options[] = 
+	{
+		{GetCodeFromUser, "Edit code"},
+		{TestCodeToUser, "Test code" },
+		{ShowSolutionToUser, "Show solution"},
+		{ResetCodeFile, "Reset code file"},
+		{NULL, "Go back"},
+		{EndProgram, "Exit"}
+	};
+	int optionCount = sizeof(options) / sizeof(Option);
 	while (1)
 	{
 		system("cls");
 		printf("Choose an operation:\n\n");
-		printf("(1) ---> Edit code\n");
-		printf("(2) ---> Test code\n");
-		printf("(3) ---> Reset code file\n");
-		printf("(4) ---> Go back\n");
-		printf("(5) ---> Exit\n\n");
+		int i;
+		for (i = 0; i < optionCount; i++)
+		{
+			printf("(%d) --> %s\n", i + 1, options[i].name);
+		}
+		putchar('\n');
 		char input[3];
-		int success = GetIntInRange(input, 3, OPERATION_COUNT);
-		if (!success)
+		int success = GetIntInRange(input, 3, optionCount);
+		if (success)
 		{
-			ExerciseMenu(exerciseNum);
-			return;
-		}
-		int num = atoi(input);
-		if (num == 1)
-		{
-			GetCodeFromUser(exerciseNum);
-		}
-		else if (num == 2)
-		{
-			TestCodeToUser(exerciseNum);
-		}
-		else if (num == 3)
-		{
-			ResetCodeFile(exerciseNum);
-		}
-		else if (num == 4)
-		{
-			return;
-		}
-		else
-		{
-			EndProgram();
+			int choice = atoi(input);
+			void (*functionChoice)(char*) = options[choice - 1].function;
+			if (functionChoice == NULL)
+			{
+				return;
+			}
+			functionChoice(exerciseNum);
 		}
 	}
+}
+
+void ShowSolutionToUser(char* exerciseNum)
+{
+	/// <summary>
+	/// Opens the solution code file for the exercise
+	/// </summary>
+	/// <param name="exerciseNum"> The exercise number</param>
+	OpenFileToUser(exerciseNum, "Solution", "asm");
 }
 
 void ResetCodeFile(char* exerciseNum)
@@ -141,19 +152,30 @@ void ResetCodeFile(char* exerciseNum)
 	system("pause");
 }
 
-void DisplayErrors(int errorCount, char* exerciseNum)
+void DisplayErrors(int errorCount, char* exerciseNum, FILE* stream, int commentErrors)
 {
 	/// <summary>
 	/// Finds out and displays the assembling errors 
 	/// </summary>
 	/// <param name="errorCount"> The number of assembling errors </param>
-	printf("Error count: %d\n", errorCount);
-	printf("Error list: \n\n");
+	if (commentErrors)
+	{
+		fprintf(stream, ";");
+	}
+	fprintf(stream, "Error count: %d\n", errorCount);
+	if (commentErrors)
+	{
+		fprintf(stream, ";");
+	}
+	fprintf(stream, "Error list: \n");
 	Error* errors = GetAssemblingErrors(errorCount, exerciseNum);
 	for (int i = 0; i < errorCount; i++)
 	{
-		printf("(%d): ", errors[i].lineNumber);
-		puts(errors[i].description);
+		if (commentErrors)
+		{
+			fprintf(stream, ";");
+		}
+		fprintf(stream, "(%d): %s", errors[i].lineNumber, errors[i].description);
 	}
 	free(errors);
 }
@@ -171,6 +193,95 @@ void GetCodeFromUser(char* exerciseNum)
 	system("pause");
 	LetUserEdit(exerciseNum);
 }
+
+void LetUserEdit(char* exerciseNum)
+{
+	/// <summary>
+	/// Lets the user edit the code for the exercise
+	/// </summary>
+	/// <param name="exerciseNum"> The exercise number </param>
+	OpenFileToUser(exerciseNum, "Code", "asm");
+}
+
+void TestCodeToUser(char* exerciseNum)
+{
+	/// <summary>
+	/// Tests the user's code and presents the result
+	/// </summary>
+	/// <param name="exercsieNum"> The exercise number </param>
+	system("cls");
+	printf("Please wait . . . ");
+	clock_t start = clock();
+	HANDLE DOSBoxHandle = TestCode(exerciseNum);
+	HANDLE DOSBoxJob = CreateJobAssignProcess(DOSBoxHandle);
+	DWORD waitType = WaitForSingleObject(DOSBoxHandle, MIL_SECONDS_TO_WAIT);
+	int errorCount = CountAssemblingErrors();
+	clock_t end = clock();
+	system("cls");
+	if (waitType == WAIT_TIMEOUT)
+	{
+		printf("Took too long to test\n");
+		printf("Perhaps your code has runtime errors or is stuck at an infinite loop\n");
+		TerminateJobObject(DOSBoxJob, 1);
+	}
+	else
+	{
+		double seconds = CalculateTimePassed(start, end);
+		printf("Time took to test: %.2f\n", seconds);
+		if (errorCount)
+		{
+			printf("There are assembling errors in the code\n");
+			DisplayErrors(errorCount, exerciseNum, stdout, 0);
+		}
+		else
+		{
+			printf("No assembling errors\n");
+			int result = CheckResult();
+			if (result == 1)
+			{
+				printf("Good job! All test cases passed!\n");
+			}
+			else if (result == 0)
+			{
+				printf("Your code has failed the test\n");
+			}
+			else
+			{
+				ThrowError("Weird behaviour, neither 0 nor 1\n", 0);
+			}
+		}
+	}
+	remove("temp.txt"); //sometimes unecessary, doesn't hurt when not necessary
+	CloseHandle(DOSBoxHandle);
+	CloseHandle(DOSBoxJob);
+	system("pause");
+}
+
+//void WriteAssemblingErrorsInCodeFile(int exerciseNum, int errorCount)
+//{
+//	FILE* temp = fopen("temp.txt", "w");
+//	if (!CheckFilePointer(temp, "TestCodeToUser"))
+//	{
+//		return;
+//	}
+//	fputs(";Last errors:\n", temp);
+//	DisplayErrors(errorCount, exerciseNum, temp, 1);
+//	char* codeFilePath = GetCodeFilePath(exerciseNum, "code", "asm");
+//	FILE* codeFile = fopen(codeFilePath, "r");
+//	if (!CheckFilePointer(temp, "TestCodeToUser"))
+//	{
+//		fclose(temp);
+//		free(codeFilePath);
+//		return;
+//	}
+//	fputc('\n', temp);
+//	MyCopyFile(temp, codeFile);
+//	fclose(codeFile);
+//	fclose(temp);
+//	remove(codeFilePath);
+//	rename("temp.txt", codeFilePath);
+//	free(codeFilePath);
+//}
 
 /*void AssembleCodeToUser(char* exerciseNum)
 {
@@ -220,66 +331,3 @@ void GetCodeFromUser(char* exerciseNum)
 	free(path);
 	system("pause");
 }*/
-
-void LetUserEdit(char* exerciseNum)
-{
-	/// <summary>
-	/// Lets the user edit the code for the exercise
-	/// </summary>
-	/// <param name="exerciseNum"> The exercise number </param>
-	char* path = GetCodeFilePath(exerciseNum, "Code", "asm");
-	system(path);
-	free(path);
-}
-
-void TestCodeToUser(char* exercsieNum)
-{
-	/// <summary>
-	/// Tests the user's code and presents the result
-	/// </summary>
-	/// <param name="exercsieNum"> The exercise number </param>
-	system("cls");
-	printf("Please wait . . . ");
-	clock_t start = clock();
-	HANDLE DOSBoxHandle = TestCode(exercsieNum);
-	HANDLE DOSBoxJob = CreateJobAssignProcess(DOSBoxHandle);
-	DWORD waitType = WaitForSingleObject(DOSBoxHandle, MIL_SECONDS_TO_WAIT);
-	int errorCount = CountAssemblingErrors();
-	clock_t end = clock();
-	system("cls");
-	if (waitType == WAIT_TIMEOUT)
-	{
-		printf("Took too long to test\n");
-		printf("Perhaps your code has runtime errors or is stuck at an infinite loop\n");
-		TerminateJobObject(DOSBoxJob, 1);
-	}
-	else
-	{
-		double seconds = CalculateTimePassed(start, end);
-		printf("Time took to test: %.2f\n", seconds);
-		if (errorCount)
-		{
-			printf("Errors when testing code\n");
-			DisplayErrors(errorCount, exercsieNum);
-			system("pause");
-			return;
-		}
-		printf("No assembling errors\n");
-		int result = CheckResult();
-		if (result == 1)
-		{
-			printf("Good job! All test cases passed!\n");
-		}
-		else if (result == 0)
-		{
-			printf("Your code has failed the test\n");
-		}
-		else
-		{
-			ThrowError("Weird behaviour, neither 0 nor 1\n", 0);
-		}
-	}
-	CloseHandle(DOSBoxHandle);
-	CloseHandle(DOSBoxJob);
-	system("pause");
-}

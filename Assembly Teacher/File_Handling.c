@@ -14,11 +14,7 @@ int CheckFilePointer(FILE* f, char* place)
 	}
 	else
 	{
-		char* def = "Error when opening file at ";
-		char* error = (char*)malloc((strlen(def) + strlen(place) + 1) * sizeof(char));
-		strcpy(error, def);
-		strcat(error, place);
-		ThrowError(error, 1);
+		printf("\nError when opening file at %s", place);
 		return 0;
 	}
 }
@@ -122,7 +118,6 @@ void MyCopyFileByPath(char* dest, char* src)
 char* GetCodeFilePath(char* exerciseNum, char* name, char* ext)
 {
 	/// <summary>
-	/// Returns a dynamically 
 	/// </summary>
 	/// <param name="exerciseNum"></param>
 	/// <param name="name"></param>
@@ -134,7 +129,7 @@ char* GetCodeFilePath(char* exerciseNum, char* name, char* ext)
 		ThrowError("Unable to allocate dynamic memory in GetCodeFilePath", 0);
 		return NULL;
 	}
-	sprintf_s(path, 50, "TASM\\Exers\\Exer%s\\%s.%s", exerciseNum, name, ext);
+	sprintf(path, "TASM\\Exers\\Exer%s\\%s.%s", exerciseNum, name, ext);
 	return path;
 }
 
@@ -209,4 +204,17 @@ double CalculateTimePassed(size_t start, size_t end)
 	/// <param name="end"> End </param>
 	/// <returns> Time passed in seconds </returns>
 	return ((double)end - (double)start) / CLOCKS_PER_SEC;
+}
+
+void OpenFileToUser(char* exerciseNum, char* nameOfFile, char* ext)
+{
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="exerciseNum"> The exercise number</param>
+	/// <param name="nameOfFile"> The name of the file, e.g Code</param>
+	/// <param name="ext"> The extension of the file</param>
+	char* path = GetCodeFilePath(exerciseNum, nameOfFile, ext);
+	system(path);
+	free(path);
 }
