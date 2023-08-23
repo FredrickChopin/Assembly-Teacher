@@ -25,7 +25,7 @@ Then we append the auto-execute commands to Configurations.conf
 Now, it is finally time to run DOSBox. We do it by running the batch file named Assemble_Code.bat.
 DOSBox is run in the background. We achieved it by writing the command set sdl_videodriver=dummy beforehand.
 The TASM output is written to a text file named TASM_OUT.txt 
-We open the file to report the errors to the user.
+We report the errors to the user.
 If there are no errors we go on, else, we give the user a chance to edit the code.
 
 4) Test the code
@@ -38,16 +38,3 @@ The assembling is done just like in 3)
 The testing program always outputs a file named OUTPUT.txt at TASM folder.
 Its content is 1 if all cases passed and 0 otherwise.
 If the user code failed at least one test case, he is given a chance to edit the code
-
-Current problems:
-With CountAssemblingErrors() and GetAssemblingErrors() won't work properly if there are more than 9 exercises and it reports unwantingly errors from files
-other than Code.asm
-Need to rethink how to structure the tests and the Basic.asm file, to prevent procedure naming collisions
-
-Plans for the future:
-1) Add a mechanism for handling code that halts or goes into an infinite loop. Perhaps this could be done by setting a reasonable waiting time, e.g 5 seconds. (Added)
-2) Add more exercises
-3) Expand the types of exercises. So far, the exercises are only of type "Write a function...". We may want to allow the user to write a full assembly program.
-4) Add procedures to the Basic.asm file, so it will be easier to design future exercises
-5) Add a mechanism for assuring user's code is valid. For example, adding "end" at the end can make the test fail or messing up the stack might cause unexpected behaviour.
-6) Make it runnable on other OS.
